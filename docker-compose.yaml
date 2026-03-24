@@ -1,0 +1,15 @@
+version: '3.9'
+
+
+services:
+  detalon_channel:
+    container_name: detalon_channel
+    image: ghcr.io/eveneasy/detalon_channel:latest
+    build:
+      dockerfile: Dockerfile
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - "./questions.json:/app/questions.json"
+    mem_limit: 0.5g
+    cpus: "0.5"
