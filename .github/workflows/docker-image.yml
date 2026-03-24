@@ -1,0 +1,48 @@
+name: detalon_channel
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+
+jobs:
+  build_and_push:
+    name: build & push docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images:
+            ghcr.io/eveneasy/detalon_channel:${{ github.ref_name }}
+            ghcr.io/eveneasy/detalon_channel:latest
+          flavor: latest=true
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+
+      - name: log in to docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/eveneasy/detalon_channel:${{ github.ref_name }}
+            ghcr.io/eveneasy/detalon_channel:latest
