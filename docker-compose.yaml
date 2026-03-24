@@ -11,5 +11,7 @@ services:
     env_file: .env
     volumes:
       - "./questions.json:/app/questions.json"
-    mem_limit: 0.5g
-    cpus: "0.5"
+    mem_limit: 300m
+    mem_reservation: 150m
+    cpus: "0.50"
+    pids_limit: 200
